@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "port": 8080,
+  "timeout": "3000ms",
+  "endpoints": [
+    {
+      "endpoint": "/v1/checkout/pay",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/charge",
+          "host": ["http://nsug-payment-service.production.svc.cluster.local:3002"]
+        }
+      ]
+    }
+  ]
+}

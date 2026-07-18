@@ -1,0 +1,39 @@
+.container {
+  width: 100%;
+  padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.navigation {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.link {
+  color: var(--fg);
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--accent);
+}
+
+.linkAccent {
+  color: var(--accent);
+}

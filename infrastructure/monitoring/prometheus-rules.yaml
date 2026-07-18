@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: { name: nsug-core-alerts, namespace: monitoring }
+spec:
+  groups:
+    - name: NSUG_Alerts
+      rules:
+        - alert: HighPaymentGatewayFailureRate
+          expr: sum(rate(nsug_payment_failures_total[5m])) / sum(rate(nsug_payment_attempts_total[5m])) * 100 > 5
+          for: 2m
+          labels: { severity: critical }
+          annotations: { summary: "Taux d'échec critique sur le Payment Router (> 5%)" }

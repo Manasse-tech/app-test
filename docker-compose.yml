@@ -1,0 +1,34 @@
+services:
+  # Base de données principale avec support vectoriel pour le RAG
+  nsug-database:
+    image: ankane/pgvector:latest
+    container_name: nsug_postgres_container
+    environment:
+      POSTGRES_USER: nsug_admin
+      POSTGRES_PASSWORD: nsug_secure_pass
+      POSTGRES_DB: nsug_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - nsug-network
+
+  # Cache sémantique ultra-rapide pour l'IA
+  nsug-cache:
+    image: redis:7-alpine
+    container_name: nsug_redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - nsug-network
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  nsug-network:
+    driver: bridge

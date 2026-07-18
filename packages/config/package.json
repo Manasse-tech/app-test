@@ -1,0 +1,15 @@
+{
+  "name": "@nsug/config",
+  "version": "1.0.0",
+  "description": "NSUG shared configuration",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
