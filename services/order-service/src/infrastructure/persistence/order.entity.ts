@@ -1,6 +1,13 @@
 import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { OrderStatus } from '../../domain/value-objects/OrderStatus';
 
+export interface OrderItemData {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  currency: string;
+}
+
 @Entity('orders')
 export class OrderEntity {
   @PrimaryColumn('uuid')
@@ -19,7 +26,7 @@ export class OrderEntity {
   currency!: string;
 
   @Column({ type: 'jsonb' })
-  items!: any[];
+  items!: OrderItemData[];
 
   @CreateDateColumn()
   createdAt!: Date;

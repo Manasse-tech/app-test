@@ -7,42 +7,44 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateOrderCommand } from '../commands/CreateOrderCommand';
 import { GetOrderByIdQuery } from '../queries/GetOrderByIdQuery';
-import { Inject } from '@nestjs/common';
-import { IOrderRepository, ORDER_REPOSITORY } from '../../domain/repositories/IOrderRepository';
+import { ListOrdersQuery } from '../queries/ListOrdersQuery';
+import { GetOrdersByUserQuery } from '../queries/GetOrdersByUserQuery';
+import { CreateOrderDto } from '../dtos/create-order.dto';
+import { OrderResponseDto, OrderListResponseDto } from '../dtos/order-response.dto';
 
 @Controller('orders')
 export class OrderController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-    @Inject(ORDER_REPOSITORY)
-    private readonly repository: IOrderRepository
+    private readonly queryBus: QueryBus
   ) {}
 
   @Post()
-  @UsePipes(new ValidationPipe())
-  async create(@Body() dto: any) {
-    return this.commandBus.execute(
-      new CreateOrderCommand(dto.userId, dto.items, dto.currency || 'USD')
-    );
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async create(@Body() dto: CreateOrderDto): Promise<{ id: string }> {
+    return this.commandBus.execute(new CreateOrderCommand(dto.userId, dto.items, dto.currency));
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id') id: string): Promise<OrderResponseDto> {
     return this.queryBus.execute(new GetOrderByIdQuery(id));
   }
 
   @Get()
-  async list(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.repository.list(page, limit);
+  async list(
+    @Query('page', ParseIntPipe) page = 1,
+    @Query('limit', ParseIntPipe) limit = 10
+  ): Promise<OrderListResponseDto> {
+    return this.queryBus.execute(new ListOrdersQuery(page, limit));
   }
 
   @Get('user/:userId')
-  async findByUserId(@Param('userId') userId: string) {
-    return this.repository.findByUserId(userId);
+  async findByUserId(@Param('userId') userId: string): Promise<OrderListResponseDto> {
+    return this.queryBus.execute(new GetOrdersByUserQuery(userId));
   }
 }

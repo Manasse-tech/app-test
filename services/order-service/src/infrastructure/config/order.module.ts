@@ -6,6 +6,8 @@ import { OrderEntity } from '../persistence/order.entity';
 import { OrderController } from '../../application/controllers/order.controller';
 import { CreateOrderCommandHandler } from '../../application/commands/CreateOrderCommandHandler';
 import { GetOrderByIdQueryHandler } from '../../application/queries/GetOrderByIdQueryHandler';
+import { ListOrdersQueryHandler } from '../../application/queries/ListOrdersQueryHandler';
+import { GetOrdersByUserQueryHandler } from '../../application/queries/GetOrdersByUserQueryHandler';
 import { TypeOrmOrderRepository } from '../repositories/TypeOrmOrderRepository';
 import { ORDER_REPOSITORY } from '../../domain/repositories/IOrderRepository';
 
@@ -15,6 +17,8 @@ import { ORDER_REPOSITORY } from '../../domain/repositories/IOrderRepository';
   providers: [
     CreateOrderCommandHandler,
     GetOrderByIdQueryHandler,
+    ListOrdersQueryHandler,
+    GetOrdersByUserQueryHandler,
     {
       provide: ORDER_REPOSITORY,
       useClass: TypeOrmOrderRepository,

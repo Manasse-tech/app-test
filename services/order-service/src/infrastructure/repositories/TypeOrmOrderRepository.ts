@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { IOrderRepository } from '../../domain/repositories/IOrderRepository';
 import { Order } from '../../domain/entities/Order';
 import { OrderItem } from '../../domain/value-objects/OrderItem';
-import { OrderEntity } from '../persistence/order.entity';
+import { OrderEntity, OrderItemData } from '../persistence/order.entity';
 
 @Injectable()
 export class TypeOrmOrderRepository implements IOrderRepository {
@@ -13,13 +13,17 @@ export class TypeOrmOrderRepository implements IOrderRepository {
     private readonly ormRepository: Repository<OrderEntity>
   ) {}
 
+  private mapEntityItems(items: OrderItemData[]): OrderItem[] {
+    return items.map(
+      (item) => new OrderItem(item.productId, item.quantity, item.unitPrice, item.currency)
+    );
+  }
+
   async findById(id: string): Promise<Order | null> {
     const entity = await this.ormRepository.findOneBy({ id });
     if (!entity) return null;
 
-    const items = entity.items.map(
-      (item) => new OrderItem(item.productId, item.quantity, item.unitPrice, item.currency)
-    );
+    const items = this.mapEntityItems(entity.items);
 
     return Order.restore(
       entity.id,
@@ -27,7 +31,9 @@ export class TypeOrmOrderRepository implements IOrderRepository {
       items,
       entity.status,
       Number(entity.totalAmount),
-      entity.currency
+      entity.currency,
+      entity.createdAt,
+      entity.updatedAt
     );
   }
 
@@ -35,16 +41,16 @@ export class TypeOrmOrderRepository implements IOrderRepository {
     const entities = await this.ormRepository.find({ where: { userId } });
 
     return entities.map((entity) => {
-      const items = entity.items.map(
-        (item) => new OrderItem(item.productId, item.quantity, item.unitPrice, item.currency)
-      );
+      const items = this.mapEntityItems(entity.items);
       return Order.restore(
         entity.id,
         entity.userId,
         items,
         entity.status,
         Number(entity.totalAmount),
-        entity.currency
+        entity.currency,
+        entity.createdAt,
+        entity.updatedAt
       );
     });
   }
@@ -78,16 +84,16 @@ export class TypeOrmOrderRepository implements IOrderRepository {
     });
 
     const items = entities.map((entity) => {
-      const orderItems = entity.items.map(
-        (item) => new OrderItem(item.productId, item.quantity, item.unitPrice, item.currency)
-      );
+      const orderItems = this.mapEntityItems(entity.items);
       return Order.restore(
         entity.id,
         entity.userId,
         orderItems,
         entity.status,
         Number(entity.totalAmount),
-        entity.currency
+        entity.currency,
+        entity.createdAt,
+        entity.updatedAt
       );
     });
 

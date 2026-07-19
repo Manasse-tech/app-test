@@ -29,12 +29,7 @@ export class Order extends BaseAggregateRoot {
     this.updatedAt = new Date();
   }
 
-  static async create(
-    id: string,
-    userId: string,
-    items: OrderItem[],
-    currency: string = 'USD'
-  ): Promise<Order> {
+  static create(id: string, userId: string, items: OrderItem[], currency: string = 'USD'): Order {
     if (!items || items.length === 0) {
       throw new Error('Order must contain at least one item');
     }
@@ -53,10 +48,14 @@ export class Order extends BaseAggregateRoot {
     items: OrderItem[],
     status: OrderStatus,
     totalAmount: number,
-    currency: string
+    currency: string,
+    createdAt: Date,
+    updatedAt: Date
   ): Order {
     const order = new Order(id, userId, items, totalAmount, currency);
     order.status = status;
+    order.createdAt = createdAt;
+    order.updatedAt = updatedAt;
     return order;
   }
 

@@ -22,7 +22,7 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
       (item) => new OrderItem(item.productId, item.quantity, item.unitPrice, item.currency)
     );
 
-    const order = await Order.create(uuidv4(), command.userId, orderItems, command.currency);
+    const order = Order.create(uuidv4(), command.userId, orderItems, command.currency);
 
     await this.repository.save(order);
 
