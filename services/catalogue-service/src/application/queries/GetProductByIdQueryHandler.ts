@@ -5,6 +5,7 @@ import {
   IProductRepository,
   PRODUCT_REPOSITORY,
 } from '../../domain/repositories/IProductRepository';
+import { ProductResponseDto } from '../dtos/product-response.dto';
 
 @QueryHandler(GetProductByIdQuery)
 export class GetProductByIdQueryHandler implements IQueryHandler<GetProductByIdQuery> {
@@ -13,7 +14,7 @@ export class GetProductByIdQueryHandler implements IQueryHandler<GetProductByIdQ
     private readonly repository: IProductRepository
   ) {}
 
-  async execute(query: GetProductByIdQuery): Promise<any> {
+  async execute(query: GetProductByIdQuery): Promise<ProductResponseDto> {
     const product = await this.repository.findById(query.id);
 
     if (!product) {
@@ -27,6 +28,8 @@ export class GetProductByIdQueryHandler implements IQueryHandler<GetProductByIdQ
       price: product.getPrice().getAmount(),
       currency: product.getPrice().getCurrency(),
       stock: product.getStock(),
+      createdAt: product.getCreatedAt(),
+      updatedAt: product.getUpdatedAt(),
     };
   }
 }

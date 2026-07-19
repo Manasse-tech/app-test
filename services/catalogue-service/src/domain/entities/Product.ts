@@ -21,13 +21,7 @@ export class Product extends BaseAggregateRoot {
     this.updatedAt = new Date();
   }
 
-  static async create(
-    id: string,
-    sku: string,
-    title: string,
-    price: number,
-    currency: string
-  ): Promise<Product> {
+  static create(id: string, sku: string, title: string, price: number, currency: string): Product {
     const skuVo = SKU.create(sku);
     const priceVo = Price.create(price, currency);
     const product = new Product(id, skuVo, title, priceVo);

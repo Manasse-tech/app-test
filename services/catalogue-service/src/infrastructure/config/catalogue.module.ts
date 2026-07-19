@@ -6,6 +6,7 @@ import { ProductEntity } from '../persistence/product.entity';
 import { ProductController } from '../../application/commands/product.controller';
 import { CreateProductCommandHandler } from '../../application/commands/CreateProductCommandHandler';
 import { GetProductByIdQueryHandler } from '../../application/queries/GetProductByIdQueryHandler';
+import { ListProductsQueryHandler } from '../../application/queries/ListProductsQueryHandler';
 import { TypeOrmProductRepository } from '../repositories/TypeOrmProductRepository';
 import { PRODUCT_REPOSITORY } from '../../domain/repositories/IProductRepository';
 
@@ -15,6 +16,7 @@ import { PRODUCT_REPOSITORY } from '../../domain/repositories/IProductRepository
   providers: [
     CreateProductCommandHandler,
     GetProductByIdQueryHandler,
+    ListProductsQueryHandler,
     {
       provide: PRODUCT_REPOSITORY,
       useClass: TypeOrmProductRepository,

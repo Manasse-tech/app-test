@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { Inject, ConflictException } from '@nestjs/common';
 import { CreateProductCommand } from './CreateProductCommand';
 import {
   IProductRepository,
@@ -18,10 +18,10 @@ export class CreateProductCommandHandler implements ICommandHandler<CreateProduc
   async execute(command: CreateProductCommand): Promise<{ id: string }> {
     const existing = await this.repository.findBySKU(command.sku);
     if (existing) {
-      throw new Error(`Product with SKU ${command.sku} already exists`);
+      throw new ConflictException(`Product with SKU ${command.sku} already exists`);
     }
 
-    const product = await Product.create(
+    const product = Product.create(
       uuidv4(),
       command.sku,
       command.title,
